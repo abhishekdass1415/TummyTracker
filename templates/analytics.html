@@ -1,0 +1,378 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics - Tummy Tracker{% endblock %}
+
+{% block content %}
+<!-- Analytics Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card bg-gradient-primary text-white">
+            <div class="card-body">
+                <h2 class="card-title">
+                    <i class="fas fa-chart-line"></i> Your Health Analytics
+                </h2>
+                <p class="card-text">Discover patterns and insights about your digestive health.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Basic Stats -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-utensils fa-2x text-success mb-2"></i>
+                <h5 class="card-title">{{ total_meals }}</h5>
+                <p class="card-text text-muted">Total Meals Tracked</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-notes-medical fa-2x text-warning mb-2"></i>
+                <h5 class="card-title">{{ total_symptoms }}</h5>
+                <p class="card-text text-muted">Symptoms Recorded</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-percentage fa-2x text-info mb-2"></i>
+                <h5 class="card-title">{{ "%.1f"|format((total_symptoms / total_meals * 100) if total_meals > 0 else 0) }}%</h5>
+                <p class="card-text text-muted">Symptom Rate</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-calendar-day fa-2x text-primary mb-2"></i>
+                <h5 class="card-title">{{ (total_meals / 3)|round(0, 'floor')|int if total_meals > 0 else 0 }}</h5>
+                <p class="card-text text-muted">Days Tracking</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if show_analytics %}
+    <!-- Food Category Analysis -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-pie"></i> Food Category Analysis
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if category_stats %}
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Meals</th>
+                                        <th>Avg Symptom Severity</th>
+                                        <th>Risk Level</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for stat in category_stats %}
+                                        <tr>
+                                            <td>
+                                                <span class="badge bg-{{ 'success' if stat.category == 'dairy' else 'warning' if stat.category == 'spicy' else 'info' }} rounded-pill">
+                                                    {{ stat.category.replace('_', ' ').title() }}
+                                                </span>
+                                            </td>
+                                            <td>{{ stat.meal_count }}</td>
+                                            <td>
+                                                {% if stat.avg_severity %}
+                                                    <span class="badge bg-{{ 'danger' if stat.avg_severity >= 4 else 'warning' if stat.avg_severity >= 3 else 'info' }} rounded-pill">
+                                                        {{ "%.1f"|format(stat.avg_severity) }}
+                                                    </span>
+                                                {% else %}
+                                                    <span class="text-muted">-</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if stat.avg_severity %}
+                                                    {% if stat.avg_severity >= 4 %}
+                                                        <span class="text-danger"><i class="fas fa-exclamation-triangle"></i> High</span>
+                                                    {% elif stat.avg_severity >= 3 %}
+                                                        <span class="text-warning"><i class="fas fa-exclamation-circle"></i> Medium</span>
+                                                    {% else %}
+                                                        <span class="text-success"><i class="fas fa-check-circle"></i> Low</span>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="text-muted">No data</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center text-muted py-3">
+                            <i class="fas fa-chart-pie fa-2x mb-2"></i>
+                            <p>No category data available yet.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-bar"></i> Symptom Type Breakdown
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if symptom_stats %}
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Symptom</th>
+                                        <th>Count</th>
+                                        <th>Avg Severity</th>
+                                        <th>Frequency</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for stat in symptom_stats %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ stat.symptom_type.replace('_', ' ').title() }}</strong>
+                                            </td>
+                                            <td>{{ stat.count }}</td>
+                                            <td>
+                                                <span class="badge bg-{{ 'danger' if stat.avg_severity >= 4 else 'warning' if stat.avg_severity >= 3 else 'info' }} rounded-pill">
+                                                    {{ "%.1f"|format(stat.avg_severity) }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                {% set frequency = (stat.count / total_symptoms * 100) %}
+                                                <div class="progress" style="height: 20px;">
+                                                    <div class="progress-bar bg-{{ 'danger' if stat.avg_severity >= 4 else 'warning' if stat.avg_severity >= 3 else 'info' }}" 
+                                                         role="progressbar" 
+                                                         style="width: {{ "%.1f"|format(frequency) }}%">
+                                                        {{ "%.1f"|format(frequency) }}%
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center text-muted py-3">
+                            <i class="fas fa-chart-bar fa-2x mb-2"></i>
+                            <p>No symptom data available yet.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Machine Learning Insights -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-robot"></i> AI-Powered Insights
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h6>Pattern Recognition Active</h6>
+                            <p class="text-muted">
+                                Your machine learning model is analyzing patterns between your meals and symptoms. 
+                                As you log more data, the predictions will become more accurate.
+                            </p>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="card border-0 bg-light">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-success">
+                                                <i class="fas fa-lightbulb"></i> Key Insights
+                                            </h6>
+                                            <ul class="list-unstyled mb-0 small">
+                                                {% if category_stats %}
+                                                    {% for stat in category_stats[:3] %}
+                                                        {% if stat.avg_severity and stat.avg_severity >= 3 %}
+                                                            <li><i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                                                                {{ stat.category.replace('_', ' ').title() }} foods may be problematic
+                                                            </li>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endif %}
+                                                <li><i class="fas fa-info-circle text-info me-2"></i>
+                                                    Track symptoms within 24 hours of meals for best results
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="card border-0 bg-light">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-primary">
+                                                <i class="fas fa-chart-line"></i> Recommendations
+                                            </h6>
+                                            <ul class="list-unstyled mb-0 small">
+                                                <li><i class="fas fa-check text-success me-2"></i>
+                                                    Continue logging meals and symptoms consistently
+                                                </li>
+                                                <li><i class="fas fa-check text-success me-2"></i>
+                                                    Pay attention to food categories with high symptom rates
+                                                </li>
+                                                <li><i class="fas fa-check text-success me-2"></i>
+                                                    Consider keeping a food diary for additional insights
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 text-center">
+                            <i class="fas fa-robot fa-4x text-success mb-3"></i>
+                            <h6 class="text-success">ML Model Active</h6>
+                            <p class="small text-muted">
+                                Your personal AI model is learning from your data to provide better predictions.
+                            </p>
+                            <div class="progress mb-2">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 100%">
+                                    100% Trained
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% else %}
+    <!-- Data Collection Phase -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle"></i> Building Your Personal Model
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h6>Data Collection Phase</h6>
+                            <p class="text-muted mb-3">
+                                We need to collect more data before we can start analyzing patterns. 
+                                The machine learning system requires at least 10 meals to begin learning.
+                            </p>
+                            
+                            <div class="progress mb-3">
+                                <div class="progress-bar bg-warning" role="progressbar" 
+                                     style="width: {{ (total_meals / 10 * 100)|round(0, 'floor') }}%"
+                                     aria-valuenow="{{ total_meals }}" aria-valuemin="0" aria-valuemax="10">
+                                    {{ (total_meals / 10 * 100)|round(0, 'floor') }}%
+                                </div>
+                            </div>
+                            
+                            <p class="small text-muted mb-0">
+                                <strong>{{ total_meals }}</strong> of <strong>10</strong> meals logged
+                                {% if total_meals < 10 %}
+                                    • <strong>{{ 10 - total_meals }}</strong> more meals needed
+                                {% endif %}
+                            </p>
+                        </div>
+                        
+                        <div class="col-md-4 text-center">
+                            <i class="fas fa-database fa-4x text-warning mb-3"></i>
+                            <h6 class="text-warning">Collecting Data</h6>
+                            <p class="small text-muted">
+                                Keep logging your meals and symptoms to unlock AI insights!
+                            </p>
+                            <a href="{{ url_for('meals') }}" class="btn btn-warning">
+                                <i class="fas fa-plus"></i> Log More Meals
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<!-- Tips for Better Tracking -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card border-info">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-lightbulb"></i> Tips for Better Analytics
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-clock fa-2x text-info me-3"></i>
+                            </div>
+                            <div>
+                                <h6>Be Consistent</h6>
+                                <p class="small text-muted mb-0">Log meals and symptoms at the same time each day for better pattern recognition.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-notes-medical fa-2x text-warning me-3"></i>
+                            </div>
+                            <div>
+                                <h6>Track Severity</h6>
+                                <p class="small text-muted mb-0">Use the 1-5 scale consistently to help the AI understand your symptom patterns.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-utensils fa-2x text-success me-3"></i>
+                            </div>
+                            <div>
+                                <h6>Include Details</h6>
+                                <p class="small text-muted mb-0">Add notes about preparation methods, ingredients, and portion sizes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    }
+</style>
+{% endblock %}

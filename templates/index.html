@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome - Tummy Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <!-- Hero Section -->
+        <div class="text-center mb-5">
+            <h1 class="display-4 fw-bold text-primary mb-3">
+                <i class="fas fa-stomach"></i> Tummy Tracker
+            </h1>
+            <p class="lead fs-4 text-muted mb-4">
+                Discover the connection between your diet and digestive health using machine learning
+            </p>
+            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                <a href="{{ url_for('register') }}" class="btn btn-success btn-lg px-4 me-sm-3">
+                    <i class="fas fa-user-plus"></i> Get Started
+                </a>
+                <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-lg px-4">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </a>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="fas fa-utensils fa-3x text-success"></i>
+                        </div>
+                        <h5 class="card-title">Track Your Meals</h5>
+                        <p class="card-text">Log everything you eat with detailed information about ingredients, categories, and timing.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="fas fa-notes-medical fa-3x text-warning"></i>
+                        </div>
+                        <h5 class="card-title">Monitor Symptoms</h5>
+                        <p class="card-text">Record digestive symptoms with severity levels and track when they occur relative to meals.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="fas fa-brain fa-3x text-info"></i>
+                        </div>
+                        <h5 class="card-title">AI-Powered Insights</h5>
+                        <p class="card-text">Machine learning algorithms identify patterns and predict which foods might cause problems.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- How It Works Section -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <h2 class="text-center mb-4">How It Works</h2>
+                <div class="row g-4">
+                    <div class="col-md-3 text-center">
+                        <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                            <span class="h3 text-primary">1</span>
+                        </div>
+                        <h5>Log Your Meals</h5>
+                        <p class="text-muted">Record what you eat, when you eat it, and any notes about preparation or ingredients.</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                            <span class="h3 text-primary">2</span>
+                        </div>
+                        <h5>Track Symptoms</h5>
+                        <p class="text-muted">Document any digestive symptoms, their severity, and timing relative to meals.</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                            <span class="h3 text-primary">3</span>
+                        </div>
+                        <h5>AI Analysis</h5>
+                        <p class="text-muted">Our machine learning system analyzes patterns to identify food-symptom correlations.</p>
+                    </div>
+                    <div class="col-md-3 text-center">
+                        <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                            <span class="h3 text-primary">4</span>
+                        </div>
+                        <h5>Get Insights</h5>
+                        <p class="text-muted">Receive personalized recommendations and predictions to improve your digestive health.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Benefits Section -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <h2 class="text-center mb-4">Why Choose Tummy Tracker?</h2>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-shield-alt fa-2x text-success me-3"></i>
+                            </div>
+                            <div>
+                                <h5>Privacy First</h5>
+                                <p class="text-muted">Your health data stays private and secure. We use local storage and encryption to protect your information.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-chart-line fa-2x text-info me-3"></i>
+                            </div>
+                            <div>
+                                <h5>Data-Driven Insights</h5>
+                                <p class="text-muted">Advanced analytics and visualizations help you understand your patterns and make informed decisions.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-mobile-alt fa-2x text-warning me-3"></i>
+                            </div>
+                            <div>
+                                <h5>Easy to Use</h5>
+                                <p class="text-muted">Simple, intuitive interface that makes tracking your diet and symptoms effortless and enjoyable.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-robot fa-2x text-primary me-3"></i>
+                            </div>
+                            <div>
+                                <h5>AI-Powered</h5>
+                                <p class="text-muted">Machine learning algorithms continuously learn from your data to provide better predictions over time.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="text-center">
+            <div class="card bg-primary text-white">
+                <div class="card-body py-5">
+                    <h3 class="card-title mb-3">Ready to Start Your Journey?</h3>
+                    <p class="card-text mb-4">Join thousands of users who are already improving their digestive health with Tummy Tracker.</p>
+                    <a href="{{ url_for('register') }}" class="btn btn-light btn-lg">
+                        <i class="fas fa-rocket"></i> Start Tracking Today
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
